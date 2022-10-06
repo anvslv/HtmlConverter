@@ -1,8 +1,10 @@
 ﻿using HtmlConverter.Data;
 using HtmlConverter.Data.Entities;
 using HtmlConverter.Extensions;
+using HtmlConverter.Hubs;
 using HtmlConverter.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace HtmlConverter.Controllers;
@@ -13,11 +15,13 @@ public class ConverterJobsController : ControllerBase
 {
     private readonly IHtmlConverterService _s; 
     private readonly ConversionJobsContext _ctx;
+    private readonly IHubContext<ConverterHub, IConverterHub> _c;
 
-    public ConverterJobsController(IHtmlConverterService s, ConversionJobsContext ctx)
+    public ConverterJobsController(IHtmlConverterService s, ConversionJobsContext ctx, IHubContext<ConverterHub, IConverterHub> c)
     {
         _s = s; 
         _ctx = ctx;
+        _c = c;
     }
 
     [HttpGet]
@@ -48,21 +52,39 @@ public class ConverterJobsController : ControllerBase
         var savingResult = await _ctx.SaveChangesAsync();
 
         if (savingResult > 0)
-        { 
+        {
+            await _c.Clients.All.NewConversionJob(j);
+
             return Ok();
         }
       
         return BadRequest("Could not save input html file"); 
     }
 
-    [HttpGet]
-    [Route("pdf")]
-    public async Task<IActionResult> GetPdf()
+    [HttpGet] 
+    [Route("pdf/{id}")]
+    public async Task<IActionResult> GetPdf(int id)
     {
-        byte[] pdfBytes = await _s.ConvertToPdfAsync();
-        MemoryStream ms = new MemoryStream(pdfBytes);
+        var x = await _ctx.Jobs.Where(x => x.ID == id).FirstOrDefaultAsync();
+
+        if (x == null)
+        {
+            return BadRequest($"Could not get PDF with id {id}: job not found");
+        }
+
+        if (x.Status != ConversionStatus.Done)
+        {
+            return BadRequest($"Could not get PDF with id {id}: job not finished yet");
+        }
+
+        if (x.PdfContents == null)
+        {
+            return BadRequest($"Could not get PDF with id {id}: failed to get pdf contents");
+        }
+         
+        MemoryStream ms = new MemoryStream(x.PdfContents);
 
         return new FileStreamResult(ms, "application/pdf");
-
+        
     }
 }

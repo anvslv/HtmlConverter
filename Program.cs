@@ -1,11 +1,29 @@
-using HtmlConverter.Data; 
+using System.Text.Json.Serialization;
+using HtmlConverter.Data;
+using HtmlConverter.Hubs;
 using HtmlConverter.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
- 
-builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<IHtmlConverterService, HtmlConverterService>();
+
+builder.Services.AddSignalR(cfg => cfg.EnableDetailedErrors = true)
+    .AddJsonProtocol(options =>
+    {
+        options.PayloadSerializerOptions.Converters
+            .Add(new JsonStringEnumConverter());
+    });  
+
+builder.Services
+    .AddControllersWithViews()
+    .AddJsonOptions(opts =>
+    {
+        var enumConverter = new JsonStringEnumConverter();
+        opts.JsonSerializerOptions.Converters.Add(enumConverter);
+    });
+
+builder.Services.AddHostedService<BackgroundConversionService>();
+
+builder.Services.AddSingleton<IHtmlConverterService, HtmlConverterService>();
 
 builder.Services
     .AddDbContextFactory<ConversionJobsContext>((s, b) => b
@@ -26,7 +44,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-  
+
+app.MapHub<ConverterHub>("/api/converterHub");
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(

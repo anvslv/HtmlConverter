@@ -1,18 +1,41 @@
 <script setup lang="ts">
 import { onMounted, Ref, ref } from 'vue'
+import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
+import ConverterHub from '../hubs/converterHub'
 
 type Jobs = {
     id: string,
     htmlFileName: string,
-    status: number
+    status: string
 }[];
 
 const loading: Ref<boolean> = ref(false)
 const jobs: Ref<Jobs | null> = ref(null)
 const file: Ref<File | null> = ref(null);
+const form: Ref<HTMLFormElement | null> = ref(null);
 
 onMounted(() => {
     fetchJobs();
+
+    ConverterHub.client.on("NewConversionJob", function (newJob) {
+        console.log("New job", newJob)
+        jobs.value?.push(newJob)
+    })
+
+    ConverterHub.client.on("ConversionStatusChanged", function (jobId, jobStatus) {
+        console.log("Job status changed", jobId, jobStatus)
+
+        if (jobs.value) {
+            let updated = jobs.value.find(item => item.id == jobId);
+
+            if (updated) {
+                console.log("Job status updated", jobId, jobStatus)
+                updated.status = jobStatus;
+            }
+        }
+    })
+
+    ConverterHub.start();
 })
 
 function fetchJobs() {
@@ -54,11 +77,22 @@ function onFileChanged($event: Event) {
         body: payload
     })
         .then(
-            response => response.json()
-        ).then(
-            success => console.log(success)
+            success => {
+                console.log(success);
+                file.value = null;
+                if (form.value instanceof HTMLFormElement) {
+                    form.value.reset();
+                }
+            }
         ).catch(
-            error => console.log(error)
+            error => {
+                console.log(error);
+                file.value = null;
+                if (form.value instanceof HTMLFormElement) {
+                    form.value.reset();
+                }
+
+            }
         );
 }
 
@@ -66,8 +100,9 @@ function onFileChanged($event: Event) {
 </script>
 
 <template>
-
-    <input ref="file" @change="onFileChanged($event)" type="file">
+    <form ref="form">
+        <input ref="file" @change="onFileChanged($event)" type="file">
+    </form>
 
     <div v-if="loading" class="loading">
         Loading...
@@ -87,7 +122,11 @@ function onFileChanged($event: Event) {
                     <td>{{ job.htmlFileName }}</td>
                     <td>{{ job.status }}</td>
                     <td>
-                        <a target="_blank" href="api/converterjobs/pdf">PDF</a>
+                        <beat-loader v-if="job.status != 'Done'" :loading="true" :color="'#ccc'" :size="'8px'">
+                        </beat-loader>
+
+                        <a v-if="job.status == 'Done'" target="_blank"
+                            :href="`/api/converterjobs/pdf/${job.id}`">PDF</a>
                     </td>
                 </tr>
             </tbody>
