@@ -1,12 +1,23 @@
+using HtmlConverter.Data; 
 using HtmlConverter.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
  
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IHtmlConverterService, HtmlConverterService>();
 
+builder.Services
+    .AddDbContextFactory<ConversionJobsContext>((s, b) => b
+        .UseSqlite("Data Source=Data/jobs.db")
+        .UseSnakeCaseNamingConvention()
+        .UseLoggerFactory(
+            s.GetRequiredService<ILoggerFactory>()));
+
 var app = builder.Build();
 
+app.Services.SeedData();
+ 
 if (!app.Environment.IsDevelopment())
 { 
     app.UseHsts();
@@ -15,7 +26,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
+  
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
@@ -35,5 +46,6 @@ else
 {
     app.MapFallbackToFile("index.html");
 }
+
 
 app.Run();

@@ -1,5 +1,9 @@
-﻿using HtmlConverter.Services;
+﻿using HtmlConverter.Data;
+using HtmlConverter.Data.Entities;
+using HtmlConverter.Extensions;
+using HtmlConverter.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HtmlConverter.Controllers;
 
@@ -7,32 +11,48 @@ namespace HtmlConverter.Controllers;
 [Route("api/[controller]")]
 public class ConverterJobsController : ControllerBase
 {
-    private readonly IHtmlConverterService _s;
+    private readonly IHtmlConverterService _s; 
+    private readonly ConversionJobsContext _ctx;
 
-    public ConverterJobsController(IHtmlConverterService s)
+    public ConverterJobsController(IHtmlConverterService s, ConversionJobsContext ctx)
     {
-        _s = s;
+        _s = s; 
+        _ctx = ctx;
     }
 
     [HttpGet]
     [Route("jobs")]
-    public IEnumerable<ConversionJob> GetJobs()
+    public async Task<IEnumerable<ConversionJob>> GetJobs()
     {
-        return new[]
+        return await _ctx.Jobs.ToListAsync();
+    }
+
+    [HttpPost]
+    [Route("createJob")]
+    public async Task<IActionResult> CreateJob(IFormFile file)
+    {
+        if (file.FileName.EndsWith(".html") == false)
         {
-            new ConversionJob
-            {
-                ID = Guid.NewGuid(),
-                HtmlFileName = "document-one.html",
-                Status = ConversionStatus.Done
-            }  ,
-            new ConversionJob
-            {
-                ID = Guid.NewGuid(),
-                HtmlFileName = "document-two.html",
-                Status = ConversionStatus.InProgress
-            }
+            return BadRequest("Please submit HTML file"); 
+        }
+         
+        var j = new ConversionJob()
+        {
+            HtmlFileName = file.FileName,
+            HtmlContents = await file.ReadAsStringAsync(),
+            Status = ConversionStatus.ReceivedInputFile
         };
+
+        await _ctx.AddAsync(j);
+
+        var savingResult = await _ctx.SaveChangesAsync();
+
+        if (savingResult > 0)
+        { 
+            return Ok();
+        }
+      
+        return BadRequest("Could not save input html file"); 
     }
 
     [HttpGet]
