@@ -35,42 +35,43 @@ public class BackgroundConversionService : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             await Task.Delay(Delay, stoppingToken);
-            await DoConversionAsync();
-        }
+            await DoConversionAsync(stoppingToken);
+        } 
     }
 
-    public override async Task StopAsync(CancellationToken cancellationToken)
+    public override async Task StopAsync(CancellationToken token)
     {
         _logger.LogInformation("BackgroundConversionService stopping...");
 
-        await using var ctx = await _cf.CreateDbContextAsync();
+        await using var ctx = await _cf.CreateDbContextAsync(token);
 
         var pendingJobs = ctx.Jobs
             .Where(x => x.Status == ConversionStatus.InProgress)
             .AsAsyncEnumerable();
 
-        await foreach (var job in pendingJobs)
+        await foreach (var job in pendingJobs.WithCancellation(token))
         {
             job.Status = ConversionStatus.ReceivedInputFile;
-            await ctx.SaveChangesAsync();
         }
+
+        await ctx.SaveChangesAsync(token);
 
         _logger.LogInformation("BackgroundConversionService stopped");
     }
 
-    private async Task DoConversionAsync()
+    private async Task DoConversionAsync(CancellationToken token)
     {
-        await using var ctx = await _cf.CreateDbContextAsync();
+        await using var ctx = await _cf.CreateDbContextAsync(token);
 
         var pendingJobs = ctx.Jobs
             .Where(x => x.Status == ConversionStatus.ReceivedInputFile || 
                         x.Status == ConversionStatus.Failed_ConnectionServiceUnavailable)
             .AsAsyncEnumerable();
 
-        await foreach (var job in pendingJobs)
+        await foreach (var job in pendingJobs.WithCancellation(token))
         {
             job.Status = ConversionStatus.InProgress;
-            await ctx.SaveChangesAsync();
+            await ctx.SaveChangesAsync(token);
             await _hc.Clients.All.ConversionStatusChanged(job.ID, ConversionStatus.InProgress);
 
             try
@@ -91,8 +92,10 @@ public class BackgroundConversionService : BackgroundService
                 } 
             }
              
-            await ctx.SaveChangesAsync();
             await _hc.Clients.All.ConversionStatusChanged(job.ID, job.Status.Value);
         }
+
+        await ctx.SaveChangesAsync(token);
+
     }
 }
