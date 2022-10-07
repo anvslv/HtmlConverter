@@ -16,3 +16,21 @@ Possible job status values:
 *  `Failed_GenericError` (Failed: Generic Error - pdf conversion failed for some reason)
 
 When backend is stopped, jobs which have  `InProgress` status are reset back to `ReceivedInputFile`, which will allow them to be processed after backend is restarted.
+
+## How to run
+
+From `./HtmlConverter`, run
+```
+dotnet run
+```
+
+From `./HtmlConverter.ConversionService`, run
+```
+dotnet run
+```
+
+From `./HtmlConverter/ClientApp`, run
+```
+npm run dev
+```
+
