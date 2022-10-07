@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "HtmlConverter.ConversionService";
+
+package htmlconvert;
+ 
+service Conversion { 
+  rpc ConvertHtmlToPdf (ConvertRequest) returns (ConvertReply);
+}
+ 
+message  ConvertRequest {
+  string html = 1;
+}
+ 
+message ConvertReply {
+  bytes contents = 1;
+}

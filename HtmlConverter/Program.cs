@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using HtmlConverter.ConversionService;
 using HtmlConverter.Data;
 using HtmlConverter.Hubs;
 using HtmlConverter.Services;
@@ -23,7 +24,10 @@ builder.Services
 
 builder.Services.AddHostedService<BackgroundConversionService>();
 
-builder.Services.AddSingleton<IHtmlConverterService, HtmlConverterService>();
+builder.Services.AddGrpcClient<Conversion.ConversionClient>(o =>
+{
+    o.Address = new Uri("https://localhost:7119");
+});
 
 builder.Services
     .AddDbContextFactory<ConversionJobsContext>((s, b) => b

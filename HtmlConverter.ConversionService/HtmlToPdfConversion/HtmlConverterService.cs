@@ -1,6 +1,6 @@
 ﻿using PuppeteerSharp;
 
-namespace HtmlConverter.Services
+namespace HtmlConverter.ConversionService.HtmlToPdfConversion
 {
     public interface IHtmlConverterService
     {
@@ -13,7 +13,7 @@ namespace HtmlConverter.Services
         {
             using var browserFetcher = new BrowserFetcher();
             await browserFetcher.DownloadAsync();
-            await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true }); 
+            await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
             await using var page = await browser.NewPageAsync();
             await page.SetContentAsync(html);
             var pdfBytes = await page.PdfDataAsync();

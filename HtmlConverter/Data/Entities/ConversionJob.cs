@@ -30,6 +30,7 @@ namespace HtmlConverter.Data.Entities
         ReceivedInputFile,
         InProgress,
         Done,
-        Failed
+        Failed_ConnectionServiceUnavailable,
+        Failed_GenericError
     } 
 }

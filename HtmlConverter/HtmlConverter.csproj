@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="EFCore.NamingConventions" Version="6.0.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.40.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9">
@@ -20,7 +21,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.9" />
-    <PackageReference Include="PuppeteerSharp" Version="7.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +28,12 @@
     <Content Remove="$(SpaRoot)**" />
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\HtmlConverter.ConversionService\Protos\convert.proto" GrpcServices="Client">
+      <Link>Protos\convert.proto</Link>
+    </Protobuf>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

@@ -22,7 +22,7 @@ export default defineConfig({
                     ? `https://localhost:${process.env.ASPNETCORE_HTTPS_PORT}`
                     : process.env.ASPNETCORE_URLS
                         ? process.env.ASPNETCORE_URLS.split(";")[0]
-                        : "http://localhost:40457",
+                        : "http://localhost:7248",
             },
         },
     },

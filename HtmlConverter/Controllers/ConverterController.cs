@@ -13,13 +13,11 @@ namespace HtmlConverter.Controllers;
 [Route("api/[controller]")]
 public class ConverterJobsController : ControllerBase
 {
-    private readonly IHtmlConverterService _s; 
     private readonly ConversionJobsContext _ctx;
     private readonly IHubContext<ConverterHub, IConverterHub> _c;
 
-    public ConverterJobsController(IHtmlConverterService s, ConversionJobsContext ctx, IHubContext<ConverterHub, IConverterHub> c)
+    public ConverterJobsController(ConversionJobsContext ctx, IHubContext<ConverterHub, IConverterHub> c)
     {
-        _s = s; 
         _ctx = ctx;
         _c = c;
     }

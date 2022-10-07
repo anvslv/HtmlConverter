@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlConverter", "HtmlConverter.csproj", "{A421BA82-EDFB-4E1D-B0BB-F8479C3F3027}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlConverter", "HtmlConverter\HtmlConverter.csproj", "{A421BA82-EDFB-4E1D-B0BB-F8479C3F3027}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlConverter.ConversionService", "HtmlConverter.ConversionService\HtmlConverter.ConversionService.csproj", "{F51BC3D8-DE52-40B8-91AF-890BBFBDB249}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A421BA82-EDFB-4E1D-B0BB-F8479C3F3027}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A421BA82-EDFB-4E1D-B0BB-F8479C3F3027}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A421BA82-EDFB-4E1D-B0BB-F8479C3F3027}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F51BC3D8-DE52-40B8-91AF-890BBFBDB249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F51BC3D8-DE52-40B8-91AF-890BBFBDB249}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F51BC3D8-DE52-40B8-91AF-890BBFBDB249}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F51BC3D8-DE52-40B8-91AF-890BBFBDB249}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
