@@ -17,6 +17,8 @@ Possible job status values:
 
 When backend is stopped, jobs which have  `InProgress` status are reset back to `ReceivedInputFile`, which will allow them to be processed after backend is restarted.
 
+Several instances of conversion service can be deployed behind load balancer (i.e. nginx), backend will talk to this balancer instead of conversion service directly.
+
 ## How to run
 
 From `./HtmlConverter`, run
