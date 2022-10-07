@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, Ref, ref } from 'vue'
-import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
+import { onMounted, Ref, ref, computed, ComputedRef } from 'vue'
 import ConverterHub from '../hubs/converterHub'
+import List from './List.vue'
+import ListItem from './ListItem.vue'
 
 type Jobs = {
-    id: string,
+    id: number,
     htmlFileName: string,
     status: string
 }[];
@@ -13,6 +14,14 @@ const loading: Ref<boolean> = ref(false)
 const jobs: Ref<Jobs | null> = ref(null)
 const file: Ref<File | null> = ref(null);
 const form: Ref<HTMLFormElement | null> = ref(null);
+
+const sortedJobs: ComputedRef<Jobs | null> = computed(() => {
+    if (jobs.value == null) {
+        return []
+    }
+
+    return jobs.value.sort((x: { id: number }, y: { id: number }) => (x.id > y.id ? -1 : 1));
+})
 
 onMounted(() => {
     fetchJobs();
@@ -26,7 +35,7 @@ onMounted(() => {
         console.log("Job status changed", jobId, jobStatus)
 
         if (jobs.value) {
-            let updated = jobs.value.find(item => item.id == jobId);
+            let updated = jobs.value.find((item: { id: number }) => item.id == jobId);
 
             if (updated) {
                 console.log("Job status updated", jobId, jobStatus)
@@ -53,6 +62,7 @@ function fetchJobs() {
 
 function onFileChanged($event: Event) {
     const target = $event.target as HTMLInputElement;
+
     if (target && target.files) {
         file.value = target.files[0];
     }
@@ -100,39 +110,45 @@ function onFileChanged($event: Event) {
 </script>
 
 <template>
-    <form ref="form">
-        <input ref="file" @change="onFileChanged($event)" type="file">
-    </form>
 
-    <div v-if="loading" class="loading">
-        Loading...
+    <div class="p-10 m-auto">
+
+        <h1 class="text-3xl">Input HTML file</h1>
+
+        <form ref="form" class="mt-10">
+            <input ref="file" @change="onFileChanged($event)" type="file" class="
+                    form-input 
+                    px-1 
+                    py-1  
+                    mt-1
+                    block
+                    w-full
+                    rounded-md
+                    bg-gray-100
+                    border-transparent
+                    focus:border-gray-500 focus:bg-white focus:ring-0
+                  " />
+        </form>
+
+        <div class="mt-10">
+            <div v-if="loading">
+                <h1 class="text-3xl">
+                    Loading...
+                </h1>
+            </div>
+
+            <div v-if="sortedJobs">
+
+                <h1 v-if="!loading" class="text-3xl">Conversion Jobs</h1>
+
+                <List>
+                    <ListItem v-for="job in sortedJobs" :key="job.id" :jobId="job.id" :status="job.status"
+                        :html-file-name="job.htmlFileName" />
+                </List>
+            </div>
+        </div>
+
     </div>
-
-    <div v-if="jobs" class="content">
-        <table>
-            <thead>
-                <tr>
-                    <th>File</th>
-                    <th>Status</th>
-                    <th>PDF</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="job in jobs" :key="job.id">
-                    <td>{{ job.htmlFileName }}</td>
-                    <td>{{ job.status }}</td>
-                    <td>
-                        <beat-loader v-if="job.status != 'Done'" :loading="true" :color="'#ccc'" :size="'8px'">
-                        </beat-loader>
-
-                        <a v-if="job.status == 'Done'" target="_blank"
-                            :href="`/api/converterjobs/pdf/${job.id}`">PDF</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
 </template>
 
 <style scoped>

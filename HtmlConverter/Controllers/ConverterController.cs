@@ -1,8 +1,7 @@
 ﻿using HtmlConverter.Data;
 using HtmlConverter.Data.Entities;
 using HtmlConverter.Extensions;
-using HtmlConverter.Hubs;
-using HtmlConverter.Services;
+using HtmlConverter.Hubs; 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +32,7 @@ public class ConverterJobsController : ControllerBase
     [Route("createJob")]
     public async Task<IActionResult> CreateJob(IFormFile file)
     {
-        if (file.FileName.EndsWith(".html") == false)
+        if (file.FileName.EndsWith("html") == false)
         {
             return BadRequest("Please submit HTML file"); 
         }

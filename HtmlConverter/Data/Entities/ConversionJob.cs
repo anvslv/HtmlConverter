@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace HtmlConverter.Data.Entities
 { 
@@ -25,12 +28,18 @@ namespace HtmlConverter.Data.Entities
     }
 
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ConversionStatus
     {
+        [EnumMember(Value = "Received Input File")]
         ReceivedInputFile,
+        [EnumMember(Value = "In Progress")]
         InProgress,
+        [EnumMember(Value = "Done")]
         Done,
-        Failed_ConnectionServiceUnavailable,
+        [EnumMember(Value = "Failed: Conversion Service Unavailable")]
+        Failed_ConversionServiceUnavailable,
+        [EnumMember(Value = "Failed: Generic Error")]
         Failed_GenericError
     } 
 }

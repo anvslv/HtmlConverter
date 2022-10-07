@@ -1,26 +1,19 @@
-using System.Text.Json.Serialization;
+
 using HtmlConverter.ConversionService;
 using HtmlConverter.Data;
 using HtmlConverter.Hubs;
 using HtmlConverter.Services;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSignalR(cfg => cfg.EnableDetailedErrors = true)
-    .AddJsonProtocol(options =>
-    {
-        options.PayloadSerializerOptions.Converters
-            .Add(new JsonStringEnumConverter());
-    });  
+builder.Services.AddSignalR(cfg => cfg.EnableDetailedErrors = true) 
+    .AddNewtonsoftJsonProtocol(opt => opt.PayloadSerializerSettings.Converters.Add(new StringEnumConverter()));  
 
 builder.Services
     .AddControllersWithViews()
-    .AddJsonOptions(opts =>
-    {
-        var enumConverter = new JsonStringEnumConverter();
-        opts.JsonSerializerOptions.Converters.Add(enumConverter);
-    });
+    .AddNewtonsoftJson(opt => opt.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
 builder.Services.AddHostedService<BackgroundConversionService>();
 

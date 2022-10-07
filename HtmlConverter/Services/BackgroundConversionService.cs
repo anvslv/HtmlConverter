@@ -65,7 +65,7 @@ public class BackgroundConversionService : BackgroundService
 
         var pendingJobs = ctx.Jobs
             .Where(x => x.Status == ConversionStatus.ReceivedInputFile || 
-                        x.Status == ConversionStatus.Failed_ConnectionServiceUnavailable)
+                        x.Status == ConversionStatus.Failed_ConversionServiceUnavailable)
             .AsAsyncEnumerable();
 
         await foreach (var job in pendingJobs.WithCancellation(token))
@@ -88,7 +88,7 @@ public class BackgroundConversionService : BackgroundService
             {
                 if (e.StatusCode == StatusCode.Unavailable)
                 {
-                    job.Status = ConversionStatus.Failed_ConnectionServiceUnavailable; 
+                    job.Status = ConversionStatus.Failed_ConversionServiceUnavailable; 
                 } 
             }
              
