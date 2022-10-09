@@ -5,7 +5,7 @@ class ConverterHub {
    
     constructor() {
         this.client = new HubConnectionBuilder()
-            .withUrl("/api/converterHub")
+            .withUrl(import.meta.env.VITE_SERVER_URL + "/api/converterHub")
             .build();
     }
 

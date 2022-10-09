@@ -6,14 +6,13 @@
             <dl class="mt-2 flex flex-wrap text-sm leading-6 font-medium">
                 <div>
                     <dt class="sr-only">Status</dt>
-                    <dd class="flex items-center text-gray-400">
-
+                    <dd class="flex items-center text-gray-400"> 
                         {{ status }}
                     </dd>
                 </div>
 
                 <div v-if="status != 'Done'">
-                    <dt class="sr-only">Runtime</dt>
+                    <dt class="sr-only">Loading</dt>
                     <dd class="flex items-center">
                         <svg width="2" height="2" fill="currentColor" class="mx-2 text-slate-300" aria-hidden="true">
                             <circle cx="1" cy="1" r="1" />
@@ -29,7 +28,7 @@
         <div v-if="status == 'Done'" class="min-w-0 relative flex-auto">
             <h2 class="font-semibold text-slate-900  pr-20">
                 <a target="_blank" class="underline underline-offset-2 text-blue-600"
-                    :href="`/api/converterjobs/pdf/${jobId}`">PDF</a>
+                    :href="`${server}/api/converterjobs/pdf/${jobId}`">PDF</a>
             </h2>
         </div>
 
@@ -45,6 +44,8 @@
   
 <script lang="ts" setup>
 import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
+
+const server = import.meta.env.VITE_SERVER_URL
 
 interface Job {
     jobId: number,

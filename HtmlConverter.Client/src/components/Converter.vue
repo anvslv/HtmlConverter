@@ -51,7 +51,7 @@ function fetchJobs() {
     jobs.value = null;
     loading.value = true;
 
-    fetch('api/converterjobs/jobs')
+    fetch(import.meta.env.VITE_SERVER_URL + '/api/converterjobs/jobs')
         .then(r => r.json())
         .then(json => {
             jobs.value = json as Jobs;
@@ -82,7 +82,7 @@ function onFileChanged($event: Event) {
     payload.append('file', file.value, file.value.name);
 
 
-    fetch('/api/converterjobs/createjob', {
+    fetch(import.meta.env.VITE_SERVER_URL + '/api/converterjobs/createjob', {
         method: 'POST',
         body: payload
     })
