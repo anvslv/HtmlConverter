@@ -70,10 +70,9 @@ public class BackgroundConversionService : BackgroundService
 
         await foreach (var job in pendingJobs.WithCancellation(token))
         {
-            job.Status = ConversionStatus.InProgress;
-            await ctx.SaveChangesAsync(token);
+            job.Status = ConversionStatus.InProgress; 
             await _hc.Clients.All.ConversionStatusChanged(job.ID, ConversionStatus.InProgress);
-
+            
             try
             {
                 var convertReply = await _c.ConvertHtmlToPdfAsync(new ConvertRequest
