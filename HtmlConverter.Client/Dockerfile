@@ -1,0 +1,22 @@
+# Declare the base image
+FROM node:lts-alpine
+  
+# Build step
+# Copy package.json and package-lock.json to /app dir
+RUN mkdir /app
+COPY HtmlConverter.Client/package*.json /app 
+
+# Change working directory to newly created app dir
+WORKDIR /app
+
+# Install dependencies
+RUN npm install
+
+# Copy the source code to /app dir
+COPY ["HtmlConverter.Client/.", "."]
+  
+# Expose port 5003 on the container
+EXPOSE 5003
+
+# Run the app
+CMD [ "npm", "run", "dev-docker" ]

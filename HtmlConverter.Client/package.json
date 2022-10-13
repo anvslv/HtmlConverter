@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node aspnetcore-https.js && vite",
+    "dev-docker": "vite --mode docker",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview"
   },

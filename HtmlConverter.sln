@@ -13,6 +13,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{D51C14
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{41997BC7-A0CB-47A8-9967-F834769BDBB6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{E6CCFBE2-74BA-4604-A4B6-BF8214B03F79}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nginx", "nginx", "{3606A848-3B7E-4B56-BF90-05BE7DCE4791}"
+	ProjectSection(SolutionItems) = preProject
+		Deployment\config\nginx\nginx.conf = Deployment\config\nginx\nginx.conf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{63736E30-0563-48FB-A1D2-F13283FD941C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{2FA36605-A150-4229-AACD-E3CB94138204}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "protos", "protos", "{8502C4E9-1896-40DD-812A-088969771450}"
+	ProjectSection(SolutionItems) = preProject
+		Protos\convert.proto = Protos\convert.proto
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "other", "other", "{F6D26C8F-190E-4854-9E16-65C5BAEB14AF}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +66,11 @@ Global
 		{A421BA82-EDFB-4E1D-B0BB-F8479C3F3027} = {41997BC7-A0CB-47A8-9967-F834769BDBB6}
 		{F51BC3D8-DE52-40B8-91AF-890BBFBDB249} = {41997BC7-A0CB-47A8-9967-F834769BDBB6}
 		{FBBDA7F3-0334-4C34-A382-555373D4F5DF} = {D51C14A3-C682-4A41-B9AB-C0FBDB53DAB3}
+		{D51C14A3-C682-4A41-B9AB-C0FBDB53DAB3} = {63736E30-0563-48FB-A1D2-F13283FD941C}
+		{41997BC7-A0CB-47A8-9967-F834769BDBB6} = {63736E30-0563-48FB-A1D2-F13283FD941C}
+		{E6CCFBE2-74BA-4604-A4B6-BF8214B03F79} = {F6D26C8F-190E-4854-9E16-65C5BAEB14AF}
+		{3606A848-3B7E-4B56-BF90-05BE7DCE4791} = {2FA36605-A150-4229-AACD-E3CB94138204}
+		{2FA36605-A150-4229-AACD-E3CB94138204} = {E6CCFBE2-74BA-4604-A4B6-BF8214B03F79}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {55DA8F92-23FF-4633-9DE3-9976EDD99C91}

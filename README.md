@@ -21,6 +21,8 @@ Several instances of conversion service can be deployed behind load balancer (i.
 
 ## How to run
 
+### Locally 
+
 From `./HtmlConverter`, run
 ```
 dotnet run
@@ -36,3 +38,14 @@ From `./HtmlConverter/ClientApp`, run
 npm run dev
 ```
 
+
+### In docker
+
+From project root, run:
+
+```
+dotnet dev-certs https -ep ./HtmlConverter.Client/cert/htmlconverter.client.pem --format Pem --no-password
+dotnet dev-certs https -ep $env:appdata/asp.net/https/htmlconverter.pfx -p test
+dotnet dev-certs https --trust -v
+docker-compose up
+```

@@ -1,3 +1,4 @@
+using HtmlConverter;
 using HtmlConverter.ConversionService;
 using HtmlConverter.Data;
 using HtmlConverter.Hubs;
@@ -7,9 +8,11 @@ using Newtonsoft.Json.Converters;
   
 var builder = WebApplication.CreateBuilder(args);
 
+var settings = builder.Configuration.GetSection("Settings").Get<Settings>();
+ 
 builder.Services.AddCors(options => options
     .AddDefaultPolicy(policy => policy
-        .WithOrigins("https://localhost:3000")
+        .WithOrigins(settings.ClientUrl)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials() 
@@ -21,10 +24,11 @@ builder.Services
     .AddControllersWithViews()
     .AddNewtonsoftJson(opt => opt.SerializerSettings.Converters.Add(new StringEnumConverter())); 
 builder.Services.AddHostedService<BackgroundConversionService>(); 
-builder.Services.AddGrpcClient<Conversion.ConversionClient>(o => o.Address = new Uri("https://localhost:7119"));  
+builder.Services.AddGrpcClient<Conversion.ConversionClient>(o => o
+    .Address = new Uri(settings.ConversionServiceUrl));  
 builder.Services
     .AddDbContextFactory<ConversionJobsContext>((s, b) => b
-        .UseSqlite("Data Source=Data/jobs.db")
+        .UseSqlite(settings.ConnectionString)
         .UseSnakeCaseNamingConvention()
         .UseLoggerFactory(
             s.GetRequiredService<ILoggerFactory>()));

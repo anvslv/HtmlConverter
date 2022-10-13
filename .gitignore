@@ -235,3 +235,6 @@ _Pvt_Extensions
 HtmlConverter/Data/jobs.db
 HtmlConverter/Data/jobs.db-shm
 HtmlConverter/Data/jobs.db-wal
+
+HtmlConverter.Client/cert/htmlconverter.client.key
+HtmlConverter.Client/cert/htmlconverter.client.pem

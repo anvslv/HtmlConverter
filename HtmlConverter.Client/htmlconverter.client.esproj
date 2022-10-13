@@ -8,6 +8,9 @@
     <ProductionBuildCommand>npm run build</ProductionBuildCommand>
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="cert\" />
+  </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties _1env__JsonSchema="https://gitlab.com/appsemble/appsemble/-/raw/HEAD/packages/cli/assets/appsemblerc.schema.json" />

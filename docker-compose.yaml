@@ -1,0 +1,64 @@
+version: "3.9"
+services:
+  html-converter:
+    build:
+      context: ./
+      dockerfile: ./HtmlConverter/Dockerfile 
+    image: empty/html-converter
+    ports: 
+      - "5001:5001"  
+    networks:
+      - vm_net
+    volumes:
+      - ./HtmlConverter/Data:/Data
+      - ${APPDATA}/ASP.NET/https:/root/.aspnet/https
+    environment:
+      - ASPNETCORE_URLS=https://0.0.0.0:5001 
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/htmlconverter.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=test
+      - Settings__ClientUrl=https://localhost:5003
+      - Settings__ConversionServiceUrl=http://html-converter-conversion-service:5002
+      - Settings__ConnectionString=Data Source=/Data/jobs.db
+    cpus: 1.0
+    mem_reservation: 512m
+
+  html-converter-conversion-service:
+    build:
+      context: ./
+      dockerfile: ./HtmlConverter.ConversionService/Dockerfile  
+    image: empty/html-converter-conversion-service
+    ports: 
+      - "5002:5002"      
+    networks:
+      - vm_net
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5002
+    cpus: 1.0
+    mem_reservation: 512m
+     
+  html-converter-client:
+    build:
+      context: ./
+      dockerfile: ./HtmlConverter.Client/Dockerfile  
+    image: empty/html-converter-client
+    ports: 
+      - "5003:5003"
+    networks:
+      - vm_net
+    volumes:
+      - ${APPDATA}/ASP.NET/https:/root/.aspnet/https
+    cpus: 1.0
+    mem_reservation: 512m
+
+  nginx:
+    container_name: nginx
+    image: nginx 
+    depends_on:
+      - html-converter-conversion-service
+    ports:
+      - "5050:5050"      
+    networks:
+      - vm_net
+                 
+networks:
+  vm_net: 
