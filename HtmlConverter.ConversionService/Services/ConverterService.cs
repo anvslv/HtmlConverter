@@ -17,9 +17,9 @@ namespace HtmlConverter.ConversionService.Services
 
         public override async Task<ConvertReply> ConvertHtmlToPdf(ConvertRequest request, ServerCallContext context)
         {
-            _l.LogInformation($"Started conversion: ${request.Filename}");
+            _l.LogInformation($"Started conversion: {request.Filename}");
             var bytes = await _s.ConvertToPdfAsync(request.Html);
-            _l.LogInformation($"Finished conversion: ${request.Filename}");
+            _l.LogInformation($"Finished conversion: {request.Filename}");
 
             return new ConvertReply
             {

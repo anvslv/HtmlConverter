@@ -1,4 +1,4 @@
-import { HubConnection, HubConnectionBuilder } from "@aspnet/signalr";
+import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 class ConverterHub {
     client: HubConnection;
@@ -6,6 +6,8 @@ class ConverterHub {
     constructor() {
         this.client = new HubConnectionBuilder()
             .withUrl(import.meta.env.VITE_SERVER_URL + "/api/converterHub")
+            .withAutomaticReconnect()
+            .configureLogging(LogLevel.Information)
             .build();
     }
 
