@@ -78,7 +78,8 @@ public class BackgroundConversionService : BackgroundService
             {
                 var convertReply = await _c.ConvertHtmlToPdfAsync(new ConvertRequest
                 {
-                    Html = job.HtmlContents
+                    Html = job.HtmlContents,
+                    Filename = job.HtmlFileName
                 }); 
            
                 job.PdfContents = convertReply.ToByteArray();

@@ -10,6 +10,7 @@ service Conversion {
  
 message  ConvertRequest {
   string html = 1;
+  string filename = 2;
 }
  
 message ConvertReply {
